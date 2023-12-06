@@ -24,4 +24,4 @@ Now please see this very important project that I worked on. <https://jakobagger
 
 ## News Story
 
-This is a news story that I wrote while at GW.
+This is a news story that I wrote while at GW. <https://98a04d2b3941491b9dbcf51ee33c7c0e.app.posit.cloud/p/37b04530/newsstory.html>
