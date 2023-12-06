@@ -1,3 +1,5 @@
+<body style="background-color:#B0D0D4;">
+
 ## Jakob Aggers
 
 Hello! This is the webpage about me, Jakob Aggers. I am currently a senior at George Washington University studying Data Science, Journalism, and Math, and I am also in the Marine Corps.
@@ -21,5 +23,5 @@ Attached is some work I have done analyzing yadda yadda yadda.
 Now please see this very important project that I worked on. <https://jakobaggers.github.io/mywebsite/index2.html>
 
 ## News Story
-This is a news story that I wrote while at GW.
 
+This is a news story that I wrote while at GW.
