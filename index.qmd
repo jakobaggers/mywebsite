@@ -1,20 +1,10 @@
----
-title: "Jakob Aggers Website"
-format: html
-editor: visual
----
-
 ## Jakob Aggers
 
 Hello! This is the webpage about me, Jakob Aggers. I am currently a senior at George Washington University studying Data Science, Journalism, and Math, and I am also in the Marine Corps.
 
 Below you can find my resume as well as previous work I have done. Thanks for visiting!
 
-Below is my favorite .gif!
-
-## ![](IMG_1077.GIF)
-
-Below is a picture of me and my parents at my graduation for Marine Corps Officer Candidates School this summer!
+Below is a picture of me and my parents at my graduation for Marine Corps Officer Candidates School this summer.
 
 ![](IMG_2012.JPEG)
 
@@ -29,3 +19,7 @@ Attached is some work I have done analyzing yadda yadda yadda.
 ## Other Work from My Time at GW
 
 Now please see this very important project that I worked on. <https://jakobaggers.github.io/mywebsite/index2.html>
+
+## News Story
+This is a news story that I wrote while at GW.
+
