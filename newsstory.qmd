@@ -1,3 +1,5 @@
+<body style="background-color:#dae4e8;">
+
 ## News Story
 
 Below is a news story I wrote for Advanced News Reporting while covering the WMATA/D.C. Public Transportation Beat.

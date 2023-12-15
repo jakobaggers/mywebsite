@@ -1,3 +1,5 @@
+<body style="background-color:#dae4e8;">
+
 ## Paper while at GW
 
 To see the paper in proper .pdf form, click [here](https://github.com/jakobaggers/mywebsite/blob/main/Hate%20Speech%20on%20Social%20Media.pdf).
