@@ -12,7 +12,7 @@ Below is a picture of me and my parents at my graduation for Marine Corps Office
 
 ## Resume
 
-Please see my resume here!
+Please see my resume [here](https://github.com/jakobaggers/mywebsite/blob/main/Jakob%20Aggers%20Resume%20Fall%202023.pdf)!
 
 ## Work with Census Data in R
 
@@ -20,7 +20,7 @@ Attached is some work I have done analyzing yadda yadda yadda.
 
 ## Other Work from My Time at GW
 
-Now please see this very important project that I worked on. <https://jakobaggers.github.io/mywebsite/index2.html>
+Now please see this [project](https://jakobaggers.github.io/mywebsite/index2.html) that I worked on while at GW. This project was for a Research Methods class analyzing Hate Speech on Social Media.
 
 ## News Story
 
