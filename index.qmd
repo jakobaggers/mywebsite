@@ -24,4 +24,4 @@ Now please see this [project](https://jakobaggers.github.io/mywebsite/index2.htm
 
 ## News Story
 
-This is a [news story](https://98a04d2b3941491b9dbcf51ee33c7c0e.app.posit.cloud/p/37b04530/newsstory.html) that I wrote while at GW. It was during my Advanced News Reporting Class, during which I covered the D.C. Metro and Public Transportation beat.
+This is a [news story](https://jakobaggers.github.io/mywebsite/newsstory.html) that I wrote while at GW. It was during my Advanced News Reporting Class, during which I covered the D.C. Metro and Public Transportation beat.
