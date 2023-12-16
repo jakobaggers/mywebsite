@@ -1,4 +1,4 @@
-<body style="background-color:#dae4e8;">
+<body style="background-color:#d9b4b4;">
 
 Return [Home](https://jakobaggers.github.io/mywebsite/)
 
