@@ -1,5 +1,278 @@
-<body style="background-color:#dae4e8;">
+<body style="background-color:#d9b4b4;">
 
 Return [Home](https://jakobaggers.github.io/mywebsite/)
 
 ## Census Data
+
+```{r}
+# Turn off scientific notation
+options(scipen=999)
+
+# Load the tidyverse.
+library(tidyverse)
+library(tidycensus)
+
+```
+
+## Setup Census API
+
+Now I'm going to configure my Census API Key:
+
+```{r echo=FALSE}
+
+# myapikey <- "86359f4e38c04ed1b0033e61bd10d11e1fb9293e"
+
+# tidycensus::census_api_key(myapikey, install = TRUE)
+
+```
+
+## Load and view ACS variables
+
+Here I load the list of American Community Survey variables from the 2022 5-year estimates:
+
+```{r}
+censusvariables <- tidycensus::load_variables(2021, "acs5", cache = TRUE)
+```
+
+## Load Median Age and Median Income
+
+The question I am trying to answer is: "Do counties with younger populations make more money?" (i.e. is there a correlation between median age and median income?).
+
+I am also choosing my wonderful home state of Colorado specifically for this one.
+
+```{r}
+medage <- "B01002_001"
+
+medage_dta <- tidycensus::get_acs(geography = "county", 
+        variables = medage,
+        state = "CO",
+        output = "wide")
+
+medincome <- "B06011_001"
+
+medincome_dta <- tidycensus::get_acs(geography = "county",
+                         variables = medincome,
+                         state = "CO",
+                         output = "wide")
+```
+
+## Join the Datasets
+
+```{r}
+dta <- left_join(medage_dta, medincome_dta)
+```
+
+## Clean up the data
+
+```{r}
+dta <-
+  dta %>% 
+  rename(medage = B01002_001E,
+         medincome = B06011_001E) %>% 
+  select(!c(B01002_001M, B06011_001M))
+```
+
+## Make a scatter plot!
+
+```{r}
+library(ggplot2)
+
+# Basic scatter plot with customized aesthetics
+ggplot(dta, aes(x = medage, y = medincome)) +
+  geom_point(
+    color = "forestgreen",    # Point color
+    size = 3,               # Point size
+    alpha = 0.5             # Transparency
+  ) +
+  geom_smooth(
+    method = "lm",          # Use linear regression for the line of best fit
+    se = TRUE,             # Don't plot confidence interval
+    color = "blue",         # Line color
+    linetype = "solid"     # Line type
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Relationship Between Median Age and Median Income for Colorado Counties",
+    x = "Median Age",
+    y = "Median Income"
+  )
+
+```
+
+As we can see, there is not a strong correlation at all, except maybe a slight negative correlation.
+
+## A look at county classification
+
+In Colorado, there are 3 main type of geography... Mountain, Rural, and Urban. I break the counties up like that below and make them a factor variable.
+
+I got these classifications from ChatGPT, however, if I had more time I would go back in and match the counties with their correct classifications from the .gov data. I would also look into more specific classifications, but I used Mountain, Rural, and Urban just from my own experience.
+
+```{r}
+dta <- dta %>%
+  mutate(Geo_Category = case_when(
+    NAME %in% c(
+      "Pitkin County, Colorado", "Summit County, Colorado", "Eagle County, Colorado", 
+      "Clear Creek County, Colorado", "Ouray County, Colorado", "San Juan County, Colorado", 
+      "Grand County, Colorado", "Chaffee County, Colorado"
+    ) ~ "Mountain",
+    NAME %in% c(
+      "Weld County, Colorado", "Morgan County, Colorado", "Logan County, Colorado", 
+      "Yuma County, Colorado", "Kit Carson County, Colorado", "Otero County, Colorado", 
+      "Prowers County, Colorado", "Baca County, Colorado"
+    ) ~ "Rural",
+    NAME %in% c(
+      "Denver County, Colorado", "El Paso County, Colorado", "Arapahoe County, Colorado", 
+      "Jefferson County, Colorado", "Adams County, Colorado", "Boulder County, Colorado", 
+      "Larimer County, Colorado", "Douglas County, Colorado", "Fremont County, Colorado", 
+      "Garfield County, Colorado", "Gilpin County, Colorado", "Gunnison County, Colorado", 
+      "Hinsdale County, Colorado", "Huerfano County, Colorado", "Jackson County, Colorado", 
+      "Kiowa County, Colorado", "Lake County, Colorado", "La Plata County, Colorado", 
+      "Las Animas County, Colorado", "Lincoln County, Colorado", "Mesa County, Colorado", 
+      "Mineral County, Colorado", "Moffat County, Colorado", "Montezuma County, Colorado", 
+      "Montrose County, Colorado", "Pueblo County, Colorado", "Rio Blanco County, Colorado", 
+      "Rio Grande County, Colorado", "Routt County, Colorado", "Saguache County, Colorado", 
+      "San Juan County, Colorado", "San Miguel County, Colorado", "Sedgwick County, Colorado", 
+      "Summit County, Colorado", "Teller County, Colorado", "Washington County, Colorado",
+      "Elbert County, Colorado", "Costilla County, Colorado", "Crowley County, Colorado",
+      "Custer County, Colorado", "Delta County, Colorado", "Dolores County, Colorado",
+      "Gunnison County, Colorado", "Jefferson County, Colorado", "Rio Grande County, Colorado",
+      "Jefferson County, Colorado", "Hinsdale County, Colorado", "Pitkin County, Colorado",
+      "Mineral County, Colorado", "Huerfano County, Colorado", "Grand County, Colorado",
+      "Gunnison County, Colorado", "Montrose County, Colorado", "Grand County, Colorado",
+      "Custer County, Colorado", "Rio Blanco County, Colorado", "Routt County, Colorado"
+    ) ~ "Urban",
+    TRUE ~ "Other"))
+
+library(forcats)
+
+as.factor(dta$Geo_Category)
+
+
+```
+
+Let's graph it with our new factor variable to see if that tells us anything cool!
+
+```{r}
+ggplot(dta, aes(x = medage, y = medincome, color = Geo_Category)) +
+  geom_point() +
+  geom_smooth(
+    method = "lm",          # Use linear regression for the line of best fit
+    se = TRUE,             # Don't plot confidence interval
+    color = "blue",         # Line color
+    linetype = "solid"     # Line type
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Relationship Between Median Age and Median Income for Colorado Counties",
+    x = "Median Age",
+    y = "Median Income"
+  )
+```
+
+This is interesting. It doesn't look like there's much distinction with Urban because it is so spread out, but it seems that Mountain counties have a higher median income than Rural, and are also, for the most part, older.
+
+However, this isn't anything definitive so let's keep looking.
+
+## Boxplots by Classification
+
+```{r}
+ggplot(dta, aes(x=Geo_Category, y=medage)) + 
+  geom_boxplot( colour=c("#ff0000","#11cc11","#0000ff","#ff00ff"), outlier.shape=8, outlier.size=2) +
+  labs(title="Median Age ~ Geo_Category", x="Geo Category", y = "Median Age") +
+theme_minimal()
+
+
+ggplot(dta, aes(x=Geo_Category, y=medincome)) + 
+  geom_boxplot( colour=c("#ff0000","#11cc11","#0000ff","#ff00ff"), outlier.shape=8, outlier.size=2) +
+  labs(title="Median Income ~ Geo_Category", x="Geo Category", y = "Median Income") +
+theme_minimal()
+```
+
+Very Cool! It showed me what I suspected from the factored scatter plot, so let's do an ANOVA test to see if I'm actually right.
+
+## ANOVA test
+
+```{r}
+
+anovaRes_medage = aov(medage ~ Geo_Category, data=dta)
+
+summary(anovaRes_medage)
+```
+
+As we can see, the p-value is `r summary(anovaRes_medage)[[1]][["Pr(>F)"]][1]` which is \> 0.05 so we fail to reject the null hypothesis, and we can't say anything about the correlation between median age and geo_category.
+
+```{r}
+
+anovaRes_medincome = aov(medincome ~ Geo_Category, data=dta)
+
+summary(anovaRes_medincome)
+```
+
+Here, the p-value is `r summary(anovaRes_medincome)[[1]][["Pr(>F)"]][1]` which is \> 0.05 so we fail to reject the null hypothesis, and we can't say anything about the correlation between median age and geo_category.
+
+Let's look at something more difinitive.
+
+## Correlation Test
+
+```{r}
+correlation_result <- cor.test(dta$medage, dta$medincome)
+
+correlation_result
+```
+
+As we can see, we have a correlation of -0.1140569, which makes sense because that's what our LM line in the scatter plot showed. Unfortunately, our p-value is 0.3695, which is sort of small, but not small enough to fail to reject the null hypothesis. So, we cannot officially say that there is a correlation between median income and median age in colorado.
+
+HOWEVER, there are still some very interesting things to look at here. Let's take a look at our outliers.
+
+```{r}
+library(ggrepel)
+
+max_income_row <- dta[which.max(dta$medincome), ]
+
+# Find the row with the minimum medincome
+min_income_row <- dta[which.min(dta$medincome), ]
+
+# Find the row with the maximum medage
+max_age_row <- dta[which.max(dta$medage), ]
+
+# Find the row with the minimum medage
+min_age_row <- dta[which.min(dta$medage), ]
+
+ggplot(dta, aes(x = medage, y = medincome)) +
+  geom_point(
+    color = "forestgreen",    # Point color
+    size = 3,               # Point size
+    alpha = 0.5             # Transparency
+  ) +
+  geom_smooth(
+    method = "lm",          # Use linear regression for the line of best fit
+    se = TRUE,             # Don't plot confidence interval
+    color = "blue",         # Line color
+    linetype = "solid"     # Line type
+  ) +
+  geom_label_repel(data = rbind(max_income_row, min_income_row, max_age_row, min_age_row),
+    aes(label = NAME),
+    box.padding = 0.5,
+    point.padding = 0.1,
+    force = 2,
+    color = "black",
+    size = 3,
+    nudge_x = 1,  # Adjust these nudge values to position labels
+    nudge_y = 1) +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 6)) + 
+  labs(
+    title = "Relationship Between Median Age and Median Income for Colorado Counties",
+    x = "Median Age",
+    y = "Median Income"
+  )
+
+```
+
+Now that we can see our extreme outliers here, I would look into these specific counties and potentially write an interesting story. For example, Crowley County is fairly urban, but the median income is super low. What's the deal with that?
+
+## Crowley County
+
+From a quick search, I can see that Crowley County is in Southeastern Colorado. From my own experience, I know that Southeastern Colorado has a big problem with the Opioid Epidemic. I wonder if this is a contributing factor.
+
+Another quick Google search leads me [here](https://coag.gov/press-releases/9-29-22/). As it turns out, Crowley County is one of the few counties in Colorado to receive money from the Colorado opioid relief fund. I don't want to say anything definitive, but it would be very interesting to look into this area and see why their median income is so low.
