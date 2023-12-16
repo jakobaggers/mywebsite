@@ -16,7 +16,7 @@ Please see my resume [here](https://github.com/jakobaggers/mywebsite/blob/main/J
 
 ## Work with Census Data in R
 
-[Attached](https://jakobaggers.github.io/mywebsite/CensusData.html) is some work I have done analyzing yadda yadda yadda.
+[Attached](https://jakobaggers.github.io/mywebsite/CensusData.html) is some work I have done analyzing the relationship between median age and median income in my home state of Colorado.
 
 ## Other Work from My Time at GW
 
